@@ -31,9 +31,17 @@ class _ExpenseAppState extends State<ExpenseApp> {
     showModalBottomSheet(
       context: context,
       builder: (ctx) {
-        return const NewExpense();
+        return NewExpense(
+          addExpenses: onAddExpenses,
+        );
       },
     );
+  }
+
+  void onAddExpenses(Expense expense) {
+    setState(() {
+      _registeredExpenses.add(expense);
+    });
   }
 
   @override

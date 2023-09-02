@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
@@ -8,8 +10,11 @@ final formatter = DateFormat.yMd();
 class NewExpense extends StatefulWidget {
   const NewExpense({
     super.key,
+   
+    required this.addExpenses,
   });
-
+ 
+  final Function(Expense) addExpenses;
   @override
   State<NewExpense> createState() => _NewExpenseState();
 }
@@ -25,6 +30,8 @@ class _NewExpenseState extends State<NewExpense> {
     _amountController.dispose();
     super.dispose();
   }
+
+  void _addExpense(Expense expense) {}
 
   void _submitExpenseData() {
     final _enteredAmount = double.tryParse(_amountController.text);
@@ -48,7 +55,16 @@ class _NewExpenseState extends State<NewExpense> {
           ],
         ),
       );
-      return;
+    } else {
+      Expense expense = Expense(
+          category: _selectedCategory,
+          title: _titleCOntroller.text,
+          amount: _enteredAmount,
+          date: _dateTime!);
+      setState(() {
+        widget.addExpenses(expense);
+      });
+      Navigator.pop(context);
     }
   }
 
