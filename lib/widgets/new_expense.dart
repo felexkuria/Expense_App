@@ -11,10 +11,11 @@ class NewExpense extends StatefulWidget {
   const NewExpense({
     super.key,
    
-    required this.addExpenses,
+    required this.addExpenses, 
   });
  
   final Function(Expense) addExpenses;
+ 
   @override
   State<NewExpense> createState() => _NewExpenseState();
 }
@@ -34,10 +35,10 @@ class _NewExpenseState extends State<NewExpense> {
   void _addExpense(Expense expense) {}
 
   void _submitExpenseData() {
-    final _enteredAmount = double.tryParse(_amountController.text);
-    final _amountIsInvalid = _enteredAmount == null || _enteredAmount <= 0;
+    final enteredAmount = double.tryParse(_amountController.text);
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
     if (_titleCOntroller.text.trim().isEmpty ||
-        _amountIsInvalid ||
+        amountIsInvalid ||
         _dateTime == null) {
       showDialog(
         context: context,
@@ -59,7 +60,7 @@ class _NewExpenseState extends State<NewExpense> {
       Expense expense = Expense(
           category: _selectedCategory,
           title: _titleCOntroller.text,
-          amount: _enteredAmount,
+          amount: enteredAmount,
           date: _dateTime!);
       setState(() {
         widget.addExpenses(expense);
@@ -84,7 +85,7 @@ class _NewExpenseState extends State<NewExpense> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
       child: Column(
         children: [
           TextField(

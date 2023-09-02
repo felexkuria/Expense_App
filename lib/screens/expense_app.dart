@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multitouch_app/widgets/chart/chart.dart';
 import 'package:multitouch_app/widgets/new_expense.dart';
 
 import '../models/expense.dart';
@@ -29,6 +30,7 @@ class _ExpenseAppState extends State<ExpenseApp> {
 
   void _openAddExpensesOverlay() {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       builder: (ctx) {
         return NewExpense(
@@ -44,8 +46,50 @@ class _ExpenseAppState extends State<ExpenseApp> {
     });
   }
 
+  void _removeExpense(Expense expense) {
+    final expenseIndex = _registeredExpenses.indexOf(expense);
+    setState(() {
+      _registeredExpenses.remove(expense);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          "Expense Deleted",
+        ),
+        duration: const Duration(seconds: 3),
+        action: SnackBarAction(
+            label: "Undo",
+            onPressed: () {
+              setState(() {
+                _registeredExpenses.insert(expenseIndex, expense);
+              });
+            }),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget mainContent = const Center(
+      child: Text(
+        "No expenses Found Start Adding Some!!",
+      ),
+    );
+
+    if (_registeredExpenses.isNotEmpty) {
+      mainContent = ExpenseList(
+        expenses: _registeredExpenses,
+        removeExpenses: _removeExpense,
+      );
+    } else {
+      const Center(
+        child: Text(
+          "No expenses Found Start Adding Some!!",
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Flutter Expense Tracker"),
@@ -58,12 +102,10 @@ class _ExpenseAppState extends State<ExpenseApp> {
         // mainAxisAlignment: MainAxisAlignment.end,
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text("Expense "),
+          Chart(expenses: _registeredExpenses),
           Expanded(
-            child: ExpenseList(
-              expenses: _registeredExpenses,
-            ),
-          ),
+            child: mainContent,
+          )
         ],
       ),
     );
